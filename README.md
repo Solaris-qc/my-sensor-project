@@ -75,17 +75,18 @@
 ## 1. 前端启动
 
 Bash
-# 进入项目目录
+ 进入项目目录
 npm install
-# 启动开发服务器
+
+ 启动开发服务器
 npm run dev
+
 ## 2. 后端数据引擎
 确保已安装 Python 环境，并安装依赖：
-
 Bash
 pip install websockets
-在根目录外或专门的后端文件夹启动服务：
 
+在根目录外或专门的后端文件夹启动服务：
 Bash
 python server.py
 
