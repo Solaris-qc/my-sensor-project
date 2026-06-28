@@ -1,0 +1,158 @@
+/* 1. 绝对死锁：屏幕级重置，彻底扼杀外部滚动条 */
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh; /* 严格等于浏览器视口高度 */
+  overflow: hidden; /* 绝对禁止出现整个页面的滚动条 */
+  background-color: #030816;
+  font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: #e0e6ed;
+}
+
+/* 2. 最外层容器：强制横向排版 (侧边栏 + 主区) */
+.app-wrapper {
+  display: flex;
+  flex-direction: row; /* 横向排列 */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 3. 侧边栏 */
+.sidebar {
+  width: 80px;
+  background-color: #091325;
+  border-right: 1px solid #1a365d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  gap: 25px;
+  z-index: 10;
+  flex-shrink: 0; /* 禁止侧边栏被挤压变窄 */
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #8da2c0;
+  cursor: pointer;
+}
+.nav-item.active {
+  color: #00e5ff;
+}
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #1a365d;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}
+.nav-item.active .nav-icon {
+  background-color: #00e5ff;
+}
+
+/* 4. 主内容区：强制竖向排版 (顶栏 + 三列内容) */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 5. 顶栏：固定高度 */
+.top-header {
+  height: 65px;
+  flex-shrink: 0; /* 绝对不允许顶栏被压扁 */
+  background-color: #0b172c;
+  border-bottom: 1px solid #1a365d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* 6. 核心数据区：强制横向分为三列，严格计算剩余高度 */
+.content-body {
+  display: flex;
+  flex-direction: row; /* 强制三列水平排开 */
+  flex: 1;
+  height: calc(100vh - 65px); /* 总高度减去顶栏 */
+  padding: 10px;
+  gap: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 
+   7. 关键锁：给所有的列加上 min-height: 0 和 min-width: 0 
+   这是解决 Flex 布局下 ECharts 把容器撑破的唯一终极解法 
+*/
+.col-left {
+  flex: 3.5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  min-width: 0;
+}
+.col-center {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  min-width: 0;
+}
+.col-right {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* 8. 面板样式：强制不溢出 */
+.panel {
+  background-color: #0b172c;
+  border: 1px solid #1a365d;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0; /* 再次施加限制，禁止子元素撑大面板 */
+  position: relative;
+}
+
+.panel-header {
+  flex-shrink: 0; /* 保证面板的标题不会因为图表太大而被挤压消失 */
+  background: linear-gradient(
+    90deg,
+    rgba(0, 163, 255, 0.1) 0%,
+    transparent 100%
+  );
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  border-bottom: 1px solid #1a365d;
+  display: flex;
+  align-items: center;
+}
+.panel-header::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  background-color: #00e5ff;
+  margin-right: 8px;
+  border-radius: 2px;
+}
