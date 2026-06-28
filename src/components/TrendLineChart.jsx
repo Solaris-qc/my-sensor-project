@@ -1,77 +1,67 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
 
-const TrendLineChart = () => {
+const TrendLineChart = ({ data = [] }) => {
+  // 提取 X 轴（时间）和 Y 轴（数值）数据
+  const xData = data.map((item) => item.time);
+  const yData = data.map((item) => item.value);
+
   const option = {
-    // 悬浮提示框，展示多条线同时的数据
     tooltip: {
       trigger: "axis",
-      backgroundColor: "rgba(16, 32, 64, 0.9)",
-      borderColor: "#00e5ff",
+      backgroundColor: "rgba(11,23,44,0.8)",
+      borderColor: "#1a365d",
       textStyle: { color: "#fff" },
     },
-    // 顶部图例
-    legend: {
-      top: 0,
-      right: "10%",
-      textStyle: { color: "#aaa" },
-      icon: "circle",
-    },
-    // 图表在容器中的占位边距
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "5%",
-      top: "15%",
-      containLabel: true,
-    },
-    // X轴：时间序列
+    grid: { top: 30, right: 20, bottom: 30, left: 40 },
     xAxis: {
       type: "category",
-      boundaryGap: false,
-      data: ["05-13", "05-14", "05-15", "05-16", "05-17", "05-18", "05-19"],
-      axisLabel: { color: "#aaa" },
-      axisLine: { lineStyle: { color: "#334" } },
+      data: xData,
+      axisLine: { lineStyle: { color: "#1a365d" } },
+      axisLabel: { color: "#8da2c0", fontSize: 10 },
+      splitLine: { show: false },
     },
-    // Y轴：数值
     yAxis: {
       type: "value",
-      name: "单位: mm",
-      nameTextStyle: { color: "#aaa", padding: [0, 0, 0, -30] },
-      axisLabel: { color: "#aaa" },
-      splitLine: { lineStyle: { color: "#1a365d", type: "dashed" } }, // 科技感虚线网格
+      min: "dataMin", // Y轴根据数据动态缩放
+      axisLine: { show: false },
+      axisLabel: { color: "#8da2c0", fontSize: 10 },
+      splitLine: { lineStyle: { color: "rgba(255,255,255,0.05)" } },
     },
-    // 数据系列：多条折线
     series: [
       {
-        name: "S03",
+        name: "平均应变",
+        data: yData,
         type: "line",
-        symbol: "none", // 去掉节点上的小圆点，看起来更清爽
+        smooth: true,
+        symbol: "none", // 去掉圆点，让曲线更平滑
         lineStyle: { color: "#00e5ff", width: 2 },
-        data: [0.15, 0.16, 0.18, 0.17, 0.19, 0.21, 0.25],
-      },
-      {
-        name: "S15",
-        type: "line",
-        symbol: "none",
-        lineStyle: { color: "#00b050", width: 2 },
-        data: [0.22, 0.24, 0.26, 0.27, 0.26, 0.28, 0.32],
-      },
-      {
-        name: "S61",
-        type: "line",
-        symbol: "none",
-        lineStyle: { color: "#ff0000", width: 2 },
-        data: [0.32, 0.35, 0.38, 0.41, 0.42, 0.45, 0.48],
+        areaStyle: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: "rgba(0, 229, 255, 0.3)" },
+              { offset: 1, color: "rgba(0, 229, 255, 0)" },
+            ],
+          },
+        },
       },
     ],
   };
 
   return (
-    <ReactECharts
-      option={option}
-      style={{ height: "100%", width: "100%", minHeight: "200px" }}
-    />
+    <div style={{ width: "100%", height: "100%" }}>
+      <ReactECharts
+        option={option}
+        style={{ height: "100%", width: "100%" }}
+        notMerge={false}
+        lazyUpdate={true}
+      />
+    </div>
   );
 };
 
